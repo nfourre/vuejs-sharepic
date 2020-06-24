@@ -22,4 +22,26 @@ export default class PictureService {
   getPictureById(id) {
     return fetch(`${process.env.VUE_APP_API_URL}/pictures/${id}`);
   }
+
+  savePicture(payload) {
+    return fetch(`${process.env.VUE_APP_API_URL}/pictures/`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+  }
+
+  uploadPicture(file, filename) {
+    const formData = new FormData();
+    formData.append("name", filename);
+    formData.append("file", file);
+
+    return fetch("http://localhost:8082/upload", {
+      method: "POST",
+      body: formData,
+    });
+  }
 }

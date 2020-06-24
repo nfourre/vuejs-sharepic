@@ -21,6 +21,7 @@ const store = new Vuex.Store({
     authors: [],
     author: {},
     comments: [],
+    uploading: false,
   },
   getters: {
     pictures: (state) => state.pictures,
@@ -29,6 +30,7 @@ const store = new Vuex.Store({
     authors: (state) => state.authors,
     author: (state) => state.author,
     comments: (state) => state.comments,
+    uploading: (state) => state.uploading,
   },
   mutations: {
     updatePictures(state, payload) {
@@ -49,6 +51,9 @@ const store = new Vuex.Store({
     },
     updateComments(state, payload) {
       Vue.set(state, "comments", payload);
+    },
+    updateUploading(state, payload) {
+      Vue.set(state, "uploading", payload);
     },
   },
   actions: {
@@ -97,6 +102,40 @@ const store = new Vuex.Store({
     async getPictureComments({ commit }, payload) {
       const commentsData = await commentService.getPictureComments(payload);
       const comments = await commentsData.json();
+      commit("updateComments", comments);
+    },
+    async uploadPicture({ dispatch, commit }, payload) {
+      commit("updateUploading", true);
+      try {
+        await pictureService.uploadPicture(
+          payload.file,
+          `picture_0${this.state.pictures.length + 1}.jpg`
+        );
+        const uploadedPicture = {
+          title: payload.title,
+          description: payload.description,
+          authorId: 1,
+          url: `http://localhost:8080/picture_0${this.state.pictures.length +
+            1}.jpg`,
+        };
+        dispatch("savePicture", uploadedPicture);
+      } catch (error) {
+        console.log(error);
+        commit("updateUploading", false);
+      }
+    },
+    async savePicture({ commit }, payload) {
+      const newPictureData = await pictureService.savePicture(payload);
+      const newPicture = await newPictureData.json();
+      const pictures = [...this.state.pictures, newPicture];
+      commit("updatePictures", pictures);
+      commit("updateUploading", false);
+    },
+    async postComment({ commit }, payload) {
+      console.log(payload);
+      const newCommentData = await commentService.addPictureComment(payload);
+      const newComment = await newCommentData.json();
+      const comments = [...this.state.comments, newComment];
       commit("updateComments", comments);
     },
   },

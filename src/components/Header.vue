@@ -47,7 +47,7 @@
             ></path>
           </svg>
         </a>
-        <a class="upload button">
+        <a class="upload button" @click="showUpload">
           <svg
             width="16"
             height="16"
@@ -68,6 +68,11 @@
 <script>
 export default {
   name: "Header",
+  methods: {
+    showUpload() {
+      this.$emit("showUpload");
+    },
+  },
 };
 </script>
 

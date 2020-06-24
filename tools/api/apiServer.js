@@ -38,9 +38,6 @@ server.use(function(req, res, next) {
 // Add createdAt to all POSTS
 server.use((req, res, next) => {
   if (req.method === "POST") {
-    req.body.createdAt = Date.now();
-    req.body.rating = 0.0;
-    req.body.editorChoice = false;
   }
   // Continue to JSON Server router
   next();
@@ -48,6 +45,9 @@ server.use((req, res, next) => {
 
 server.post("/pictures/", function(req, res, next) {
   const error = validatePicture(req.body);
+  req.body.createdAt = Math.round(new Date().getTime() / 1000);
+  req.body.rating = 0.0;
+  req.body.editorChoice = false;
   if (error) {
     res.status(400).send(error);
   } else {
@@ -57,6 +57,7 @@ server.post("/pictures/", function(req, res, next) {
 
 server.post("/comments/", function(req, res, next) {
   const error = validateComment(req.body);
+  req.body.createdAt = Math.round(new Date().getTime() / 1000);
   if (error) {
     res.status(400).send(error);
   } else {

@@ -1,6 +1,6 @@
 <template>
   <div class="viewer">
-    <div class="viewer_close">
+    <div class="viewer_close" @click="goBack">
       <span></span>
     </div>
     <div class="viewer_image">
@@ -13,6 +13,11 @@
 export default {
   name: "ImageViewer",
   props: ["picture"],
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
+  },
 };
 </script>
 

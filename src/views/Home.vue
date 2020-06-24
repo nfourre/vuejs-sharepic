@@ -43,7 +43,7 @@ export default {
       this.changePictureCategory(event);
     },
     onGoToDetails(event) {
-      this.$router.push({ name: "image", params: { id: event } });
+      this.$router.push({ name: "image", params: { id: event } }, () => {});
     },
   },
 };
